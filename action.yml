@@ -1,4 +1,5 @@
 ---
+x-upstream-ref: &ref 204c21874646c6571fceb3adf69e35cc939d61f7
 name: "Missing In Project (pinned)"
 description: >
   Wrapper around ni/labview-icon-editor's `.github/actions/missing-in-project`
@@ -15,7 +16,8 @@ inputs:
     required: true
   arch:
     description: "Bitness (32 or 64)."
-    required: true
+    required: false
+    default: "64"
   project-file:
     description: >
       Path to the .lvproj to inspect. Defaults to `main.lvproj`.
@@ -39,14 +41,19 @@ runs:
     - name: Validate inputs
       run: |
         set -euo pipefail
-        if [[ "${{ inputs.arch }}" != "32" && \
-              "${{ inputs.arch }}" != "64" ]]; then
-          echo "arch must be 32 or 64" >&2
+        valid_arches=(32 64)
+        arch="${{ inputs.arch }}"
+        if [[ ! " ${valid_arches[*]} " =~ " ${arch} " ]]; then
+          echo "arch must be one of: ${valid_arches[*]}" >&2
           exit 1
         fi
-        # Ensure the specified project file exists
-        if [[ ! -f "${{ inputs['project-file'] }}" ]]; then
-          echo "project-file '${{ inputs['project-file'] }}' not found" >&2
+        pf="${{ inputs['project-file'] }}"
+        if [[ ! -f "$pf" ]]; then
+          echo "project-file '$pf' not found" >&2
+          exit 1
+        fi
+        if [[ "$pf" != *.lvproj ]]; then
+          echo "project-file must end with .lvproj" >&2
           exit 1
         fi
         if [[ ! "${{ inputs['lv-ver'] }}" =~ ^[0-9]{4}$ ]]; then
@@ -56,7 +63,7 @@ runs:
       shell: bash
     - name: Run upstream action
       id: inner
-      uses: ni/labview-icon-editor/.github/actions/missing-in-project@204c21874646c6571fceb3adf69e35cc939d61f7  # yamllint disable-line rule:line-length
+      uses: ni/labview-icon-editor/.github/actions/missing-in-project@*ref
       with:
         lv-ver: ${{ inputs.lv-ver }}
         arch: ${{ inputs.arch }}
@@ -65,14 +72,15 @@ runs:
       id: format
       run: |
         set -euo pipefail
-        missing_files="${{ steps.inner.outputs['missing-files'] }}"
-        missing_files=$(printf '%s' "$missing_files" | tr ',\r' '\n' | \
-          sed '/^$/d')
-        count=$(printf '%s\n' "$missing_files" | wc -l)
-        {
-          echo 'missing-files<<EOF'
-          echo "$missing_files"
-          echo EOF
-          echo "missing-files-count=$count"
-        } >> "$GITHUB_OUTPUT"
+        missing="${{ steps.inner.outputs['missing-files'] }}"
+        python3 - "$missing" >> "$GITHUB_OUTPUT" <<'PY'
+        import csv, io, sys
+        data = sys.argv[1].replace('\r', '')
+        reader = csv.reader([data])
+        files = [f for f in next(reader, []) if f]
+        print('missing-files<<EOF')
+        print('\n'.join(files))
+        print('EOF')
+        print(f'missing-files-count={len(files)}')
+        PY
       shell: bash

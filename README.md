@@ -10,12 +10,20 @@ change through release notes.
 Before invoking the upstream action, this wrapper validates the inputs and
 fails early if the specified project file does not exist.
 
+## Outputs
+
+- `passed` – True if the missing-file check reported success.
+- `missing-files` – Newline-separated list of files that could not be found.
+- `missing-files-count` – Number of entries in `missing-files`.
+
 ## Release Notes
 
 - Pinned upstream action to commit [`204c218`][pinned-action] from
   `ni/labview-icon-editor/.github/actions/missing-in-project`.
 - `missing-files` output now returns a newline-separated list instead of a
   comma-separated list. Update parsing logic accordingly.
+- Added default `arch` input, enforced `.lvproj` project-file extension, and
+  switched to CSV-based output parsing to preserve spaces and commas.
 
 [upstream-action]: https://github.com/ni/labview-icon-editor/tree/develop/.github/actions/missing-in-project
 [repo]: https://github.com/ni/labview-icon-editor
