@@ -1,9 +1,9 @@
 ---
 name: "Missing In Project (pinned)"
 description: >
-  Wrapper around LabVIEW-Community-CI-CD/missing-in-project that pins
-  the underlying action to a known good commit. Upstream repository:
-  https://github.com/LabVIEW-Community-CI-CD/missing-in-project
+  Wrapper around ni/labview-icon-editor's `.github/actions/missing-in-project`
+  that pins the underlying action to a known good commit. Upstream repository:
+  https://github.com/ni/labview-icon-editor
 author: "LabVIEW Community CI/CD"
 branding:
   icon: search
@@ -56,7 +56,7 @@ runs:
       shell: bash
     - name: Run upstream action
       id: inner
-      uses: LabVIEW-Community-CI-CD/missing-in-project@6ef6511c58cbf74dca00498b5e05ca5690515f48  # yamllint disable-line rule:line-length
+      uses: ni/labview-icon-editor/.github/actions/missing-in-project@204c21874646c6571fceb3adf69e35cc939d61f7  # yamllint disable-line rule:line-length
       with:
         lv-ver: ${{ inputs.lv-ver }}
         arch: ${{ inputs.arch }}
