@@ -35,6 +35,7 @@ runs:
   steps:
     - name: Validate inputs
       run: |
+        set -euo pipefail
         if [[ "${{ inputs.arch }}" != "32" && \
               "${{ inputs.arch }}" != "64" ]]; then
           echo "arch must be 32 or 64" >&2
@@ -60,6 +61,7 @@ runs:
     - name: Format missing files
       id: format
       run: |
+        set -euo pipefail
         missing_files="${{ steps.inner.outputs['missing-files'] }}"
         if [[ -n "$missing_files" ]]; then
           missing_files=$(printf '%s' "$missing_files" | tr ',' '\n')
