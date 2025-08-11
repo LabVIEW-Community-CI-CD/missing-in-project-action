@@ -33,7 +33,8 @@ outputs:
 runs:
   using: composite
   steps:
-    - run: |
+    - name: Validate inputs
+      run: |
         if [[ "${{ inputs.arch }}" != "32" && \
               "${{ inputs.arch }}" != "64" ]]; then
           echo "arch must be 32 or 64" >&2
