@@ -10,6 +10,12 @@ change through release notes.
 Before invoking the upstream action, this wrapper validates the inputs and
 fails early if the specified project file does not exist.
 
+## Outputs
+
+- `passed` – Indicates whether the underlying check succeeded.
+- `missing-files` – Newline-separated list of files absent from the project.
+- `missing-files-count` – Number of entries in `missing-files`.
+
 ## Release Notes
 
 - Pinned upstream action to commit [`204c218`][pinned-action] from
