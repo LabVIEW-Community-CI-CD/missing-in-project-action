@@ -1,0 +1,37 @@
+---
+name: "Missing In Project (pinned)"
+description: >
+  Wrapper around LabVIEW-Community-CI-CD/missing-in-project that pins
+  the underlying action to a known good commit.
+
+inputs:
+  lv-ver:
+    description: "LabVIEW version (e.g. '2021')."
+    required: true
+  arch:
+    description: "Bitness (32 or 64)."
+    required: true
+  project-file:
+    description: >
+      Path to the .lvproj to inspect. Defaults to `main.lvproj`.
+    required: false
+    default: main.lvproj
+
+outputs:
+  passed:
+    description: "True if VI reported success."
+    value: ${{ steps.inner.outputs.passed }}
+  missing-files:
+    description: "Comma-separated list of missing files."
+    value: ${{ steps.inner.outputs['missing-files'] }}
+
+runs:
+  using: composite
+  steps:
+    - name: Run upstream action
+      id: inner
+      uses: LabVIEW-Community-CI-CD/missing-in-project@6ef6511c58cbf74dca00498b5e05ca5690515f48  # yamllint disable-line rule:line-length
+      with:
+        lv-ver: ${{ inputs.lv-ver }}
+        arch: ${{ inputs.arch }}
+        project-file: ${{ inputs.project-file }}
