@@ -29,6 +29,9 @@ outputs:
   missing-files:
     description: "Newline-separated list of missing files."
     value: ${{ steps.format.outputs['missing-files'] }}
+  missing-files-count:
+    description: "Number of missing files."
+    value: ${{ steps.format.outputs['missing-files-count'] }}
 
 runs:
   using: composite
@@ -63,12 +66,13 @@ runs:
       run: |
         set -euo pipefail
         missing_files="${{ steps.inner.outputs['missing-files'] }}"
-        if [[ -n "$missing_files" ]]; then
-          missing_files=$(printf '%s' "$missing_files" | tr ',' '\n')
-        fi
+        missing_files=$(printf '%s' "$missing_files" | tr ',\r' '\n' | \
+          sed '/^$/d')
+        count=$(printf '%s\n' "$missing_files" | wc -l)
         {
           echo 'missing-files<<EOF'
           echo "$missing_files"
           echo EOF
+          echo "missing-files-count=$count"
         } >> "$GITHUB_OUTPUT"
       shell: bash
