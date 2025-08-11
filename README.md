@@ -6,3 +6,7 @@ update the pinned commit and communicate the change through release notes.
 
 Before invoking the upstream action, this wrapper validates the inputs and
 fails early if the specified project file does not exist.
+
+## Release Notes
+
+- `missing-files` output now returns a newline-separated list instead of a comma-separated list. Update parsing logic accordingly.

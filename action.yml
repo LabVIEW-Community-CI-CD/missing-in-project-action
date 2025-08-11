@@ -27,8 +27,8 @@ outputs:
     description: "True if VI reported success."
     value: ${{ steps.inner.outputs.passed }}
   missing-files:
-    description: "Comma-separated list of missing files."
-    value: ${{ steps.inner.outputs['missing-files'] }}
+    description: "Newline-separated list of missing files."
+    value: ${{ steps.format.outputs['missing-files'] }}
 
 runs:
   using: composite
@@ -56,3 +56,16 @@ runs:
         lv-ver: ${{ inputs.lv-ver }}
         arch: ${{ inputs.arch }}
         project-file: ${{ inputs.project-file }}
+    - name: Format missing files
+      id: format
+      run: |
+        missing_files="${{ steps.inner.outputs['missing-files'] }}"
+        if [[ -n "$missing_files" ]]; then
+          missing_files=$(printf '%s' "$missing_files" | tr ',' '\n')
+        fi
+        {
+          echo 'missing-files<<EOF'
+          echo "$missing_files"
+          echo EOF
+        } >> "$GITHUB_OUTPUT"
+      shell: bash
