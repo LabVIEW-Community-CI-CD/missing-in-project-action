@@ -2,7 +2,8 @@
 name: "Missing In Project (pinned)"
 description: >
   Wrapper around LabVIEW-Community-CI-CD/missing-in-project that pins
-  the underlying action to a known good commit.
+  the underlying action to a known good commit. Upstream repository:
+  https://github.com/LabVIEW-Community-CI-CD/missing-in-project
 author: "LabVIEW Community CI/CD"
 branding:
   icon: search
