@@ -29,6 +29,12 @@ outputs:
 runs:
   using: composite
   steps:
+    - run: |
+        if [[ "${{ inputs.arch }}" != "32" && \
+              "${{ inputs.arch }}" != "64" ]]; then
+          echo "arch must be 32 or 64" >&2
+          exit 1
+        fi
     - name: Run upstream action
       id: inner
       uses: LabVIEW-Community-CI-CD/missing-in-project@6ef6511c58cbf74dca00498b5e05ca5690515f48  # yamllint disable-line rule:line-length
