@@ -3,7 +3,10 @@ name: "Missing In Project (pinned)"
 description: >
   Wrapper around LabVIEW-Community-CI-CD/missing-in-project that pins
   the underlying action to a known good commit.
-author: "<maintainer or organization>"
+author: "LabVIEW Community CI/CD"
+branding:
+  icon: search
+  color: blue
 
 inputs:
   lv-ver:
